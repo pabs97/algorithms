@@ -19,27 +19,21 @@ var addTwoNumbers = function (l1, l2) {
   let d1;
   let d2 = 0;
   let sum;
-  // let sum = new ListNode();
 
-  while (
-    nextVal1 ||
-    nextVal2 ||
-    d2
-  ) {
-    sum = (list1 && list1.val || 0) + (list2 && list2.val || 0) + d2;
+  while (nextVal1 != null || nextVal2 != null || d2) {
+    sum = nextVal1 + nextVal2 + d2;
     d1 = sum % 10;
     d2 = Math.floor(sum / 10);
 
     sumList.val = d1;
-    sumList = sumList.next = new ListNode();
-    // list1 = list1 && list1.next;
-    // list2 = list2 && list2.next;
+    sumList.next = new ListNode();
+    sumList = sumList.next;
 
-    nextVal1 = list1.next && list1.next.val || 0;
-    nextVal2 = list2.next && list2.next.val || 0;
-
+    list1 = list1 && list1.next;
+    list2 = list2 && list2.next;
+    nextVal1 = list1 && list1.val;
+    nextVal2 = list2 && list2.val;
   }
-
   return sl;
 };
 
@@ -54,5 +48,3 @@ let convertToLinkedList = (number) => {
   }
   return ln;
 }
-
-let l1 = new ListNode();
