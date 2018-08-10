@@ -28,7 +28,7 @@ class Sudoku {
 
       cell.value = arr
         .reduce((accumulator, val) => {
-          return accumulator - parseInt(val);
+          return accumulator - val;
         }, sum);
       return true;
     }
@@ -36,16 +36,21 @@ class Sudoku {
   }
 
   check(i, j) {
+    let progress = false;
     // Needs refinement, will loop over incrementally
     if (!this.isCellSolved(i, j)) {
       this.assessRow(i, j);
+      progress = true;
     }
     if (!this.isCellSolved(i, j)) {
       this.assessColumn(i, j);
+      progress = true;
     }
     if (!this.isCellSolved(i, j)) {
       this.assessQuadrant(i, j);
+      progress = true;
     }
+    return progress;
   }
 
   assessRow(i, j) {
@@ -70,8 +75,8 @@ class Sudoku {
 
   assessQuadrant(i, j) {
     let checkCell = this.board[i][j];
-    let startRow = Math.floor(i / 3);
-    let startCol = Math.floor(j / 3);
+    let startRow = Math.floor(i / 3) * 3;
+    let startCol = Math.floor(j / 3) * 3;
 
     for (let x = startRow; x < startRow + 3; x++) {
       for (let y = startCol; y < startCol + 3; y++) {
@@ -85,11 +90,20 @@ class Sudoku {
 
   // Solve the thing
   solve() {
-    for (let i in this.board) {
-      for (let j in this.board[i]) {
-        this.check(i, j);
+    // TODO: need to loop through these until we get stuck
+
+    let stuck = false;
+
+    while (!stuck) {
+
+      for (let i in this.board) {
+        for (let j in this.board[i]) {
+          this.check(i, j);
+        }
       }
     }
+
+
   }
 
   printBoard() {
@@ -101,18 +115,24 @@ class Sudoku {
     });
     console.log(output);
   }
+
+  /**
+   * Check that the board is still valid
+   */
+  isStillValid() {
+
+  }
 }
 
 class Cell {
   constructor(value, row, column, quadrant) {
-    this.value = value;
+    this.value = isNaN(value) ? value : parseInt(value);
     this.row = row;
     this.column = column;
-    this.quadrant = quadrant;
+    // this.quadrant = quadrant;
     this.impossible = new Set();
   }
 }
-
 
 let testData = [[".", ".", "9", "7", "4", "8", ".", ".", "."], ["7", ".", ".", ".", ".", ".", ".", ".", "."],
 [".", "2", ".", "1", ".", "9", ".", ".", "."], [".", ".", "7", ".", ".", ".", "2", "4", "."],
@@ -123,14 +143,19 @@ let testData = [[".", ".", "9", "7", "4", "8", ".", ".", "."], ["7", ".", ".", "
 let sudoku = new Sudoku(testData);
 
 
-sudoku.solve();
 sudoku.printBoard();
-// console.log(sudoku);
+sudoku.solve();
+sudoku.solve();
+sudoku.solve();
+sudoku.solve();
+sudoku.solve();
+sudoku.solve();
+sudoku.solve();
+sudoku.solve();
 sudoku.solve();
 sudoku.printBoard();
 
-sudoku.solve();
-sudoku.printBoard();
 
+sudoku.solve();
 sudoku.solve();
 sudoku.printBoard();
