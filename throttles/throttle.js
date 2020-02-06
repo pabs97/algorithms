@@ -9,21 +9,23 @@ let timeLastRan = 0;
  * Only run function if enough time has passed, without storing last function 
  * @param {Function} fn
  */
-function throttle(fn, args) {
+function throttle(fn, threshold) {
   const timeCurrent = now();
   const callImmediately = timeCurrent - timeLastRan > threshold;
 
-  // 20 - 14 > 5
-  if (callImmediately && !timeout) {
-    fn()
-    timeLastRan = now();
-  } else {
-    clearTimeout(timeout);
-    // 5 - (20 - 17)
-    timeout = setTimeout(() => {
+  return function () {
+    if (callImmediately && !timeout) {
       fn();
+      // fn.call(this, args);
       timeLastRan = now();
-    }, threshold - timeCurrent + timeLastRan);
+    } else {
+      clearTimeout(timeout);
+      // 5 - (20 - 17)
+      timeout = setTimeout(() => {
+        fn();
+        timeLastRan = now();
+      }, threshold - timeCurrent + timeLastRan);
+    }
   }
 }
 
@@ -49,4 +51,10 @@ delay(6002); // called after 6s, cancelled
 delay(6003); // called after 6s, logged after 11s
 delay(12001); // called after 12s, logged after 16s
 
-// needs to return functions 
+// needs to return functions
+
+let counter = 0;
+
+document.getElementById('button1').addEventListener('click', throttle(function () {
+  console.log(counter++);
+}, threshold));
